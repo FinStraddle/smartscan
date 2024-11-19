@@ -35,3 +35,5 @@ ENV/
 drafts/
 backup/
 *.log
+!docs/charts/*.png
+!docs/reports/*.md

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nifty 50 Technical Analysis Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: #f0f0f0;
+            --border-color: #ddd;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #222;
+            --text-color: #eee;
+            --card-bg: #333;
+            --border-color: #444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stock-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: var(--card-bg);
+        }
+
+        .signal-buy { color: #28a745; }
+        .signal-sell { color: #dc3545; }
+        .signal-neutral { color: #ffc107; }
+
+        .metric-badge {
+            padding: 0.4em 0.8em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin: 0 0.2em;
+        }
+
+        .search-box {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--bg-color);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sort-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .sort-buttons { flex-wrap: wrap; }
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .chart-container img {
+            transition: transform 0.3s ease;
+        }
+
+        .chart-container:hover img {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <button class="btn btn-outline-secondary theme-switch" onclick="toggleTheme()">
+        <i class="bi bi-moon-stars"></i>
+    </button>
+
+    <div class="container">
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-4">Nifty 50 Technical Analysis Report</h1>
+                <div class="text-muted">
+                    <small>Last Updated: <span id="lastUpdated">2024-11-18 22:14:12</span></small>
+                </div>
+            </div>
+
+            <div class="search-box mb-4">
+                <input type="text" class="form-control" id="searchStocks" placeholder="Search stocks...">
+                <div class="sort-buttons mt-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="sortStocks('signal')">Sort by Signal</button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="sortStocks('price')">Sort by Price</button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="sortStocks('rsi')">Sort by RSI</button>
+                    <select class="form-select form-select-sm" style="width: auto;" id="signalFilter">
+                        <option value="all">All Signals</option>
+                        <option value="buy">Buy Signals</option>
+                        <option value="sell">Sell Signals</option>
+                        <option value="strong-sell">Strong Sell</option>
+                    </select>
+                </div>
+            </div>
+
+            <h2>Nifty 50 Index Overview</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Current Statistics</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Current Value:</strong> <span class="metric-badge bg-light">23,453.80 (-0.34%)</span></li>
+                                <li><strong>Signal:</strong> <span class="metric-badge bg-danger text-white">Strong Sell (Strength: -3.00)</span></li>
+                                <li><strong>RSI:</strong> <span class="metric-badge bg-warning">28.60</span></li>
+                                <li><strong>MACD:</strong> <span class="metric-badge bg-danger text-white">-338.130</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <img src="charts/NIFTY50_technical_analysis.png" alt="Nifty 50 Chart" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="mt-4">Market Analysis Summary</h2>
+            <div class="performance-grid">
+                <div class="metric-card bg-success bg-opacity-10">
+                    <h3>3</h3>
+                    <p>Strong Buy/Buy Signals</p>
+                </div>
+                <div class="metric-card bg-danger bg-opacity-10">
+                    <h3>25</h3>
+                    <p>Sell Signals</p>
+                </div>
+                <div class="metric-card bg-danger bg-opacity-25">
+                    <h3>13</h3>
+                    <p>Strong Sell Signals</p>
+                </div>
+                <div class="metric-card bg-info bg-opacity-10">
+                    <h3>41</h3>
+                    <p>Total Stocks Analyzed</p>
+                </div>
+            </div>
+
+            <h2 class="mt-4">Detailed Stock Analysis</h2>
+            <div class="row" id="stockAnalysis">
+                <!-- Stock cards will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/stocks.js"></script>
+    <script>
+        // Theme toggling
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        // Search functionality
+        document.getElementById('searchStocks').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const stockCards = document.querySelectorAll('.stock-card');
+            
+            stockCards.forEach(card => {
+                const stockName = card.querySelector('.stock-name').textContent.toLowerCase();
+                card.style.display = stockName.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Signal filtering
+        document.getElementById('signalFilter').addEventListener('change', function(e) {
+            const signal = e.target.value;
+            const stockCards = document.querySelectorAll('.stock-card');
+            
+            stockCards.forEach(card => {
+                const stockSignal = card.getAttribute('data-signal');
+                if (signal === 'all' || stockSignal === signal) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Sorting functionality
+        function sortStocks(criterion) {
+            const stockContainer = document.getElementById('stockAnalysis');
+            const stockCards = Array.from(stockContainer.children);
+            
+            stockCards.sort((a, b) => {
+                const aValue = a.getAttribute(`data-${criterion}`);
+                const bValue = b.getAttribute(`data-${criterion}`);
+                
+                if (criterion === 'price' || criterion === 'rsi') {
+                    return parseFloat(bValue) - parseFloat(aValue);
+                }
+                return aValue.localeCompare(bValue);
+            });
+            
+            stockContainer.innerHTML = '';
+            stockCards.forEach(card => stockContainer.appendChild(card));
+        }
+
+        // Load stock data
+        async function loadStockData() {
+            // This function would typically fetch data from your markdown or JSON file
+            // For now, we'll load some sample data
+            const stocksData = [
+                // Add your stock data here
+            ];
+            
+            const container = document.getElementById('stockAnalysis');
+            stocksData.forEach(stock => {
+                // Create and append stock cards
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadStockData);
+    </script>
+</body>
+</html>
