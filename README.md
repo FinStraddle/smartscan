@@ -52,11 +52,49 @@ A comprehensive technical analysis tool for scanning and evaluating Nifty 50 sto
   - Volume profile analysis
   - Key support/resistance levels
 
+- **Interactive HTML Dashboard**: 
+  - **Real-time Visualization**:
+    - Responsive web interface
+    - Dark/light theme support
+    - Mobile-friendly design
+  
+  - **Market Overview**:
+    - Nifty 50 Index analysis
+    - Interactive technical charts
+    - Market sentiment indicators
+    - Signal distribution metrics
+
+  - **Stock Analysis Cards**:
+    - Detailed technical metrics
+    - Signal strength indicators
+    - Price and volume data
+    - Expandable charts
+    - Quick filtering and search
+
+  - **Features**:
+    - Dynamic stock filtering
+    - Signal-based sorting
+    - Real-time search
+    - Chart modal view
+    - Responsive grid layout
+
+## Dashboard Access 🌐
+
+The interactive technical analysis dashboard is available at: [SmartScan Dashboard](https://finstraddle.github.io/smartscan/)
+
+Features:
+- View Nifty 50 Index overview and market sentiment
+- Filter stocks by signal strength (Buy/Sell)
+- Search for specific stocks
+- Sort by various technical indicators
+- Toggle between dark/light themes
+- View detailed technical charts
+
 ## Installation 🔧
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/smartscan.git
+git clone https://github.com/finstraddle/smartscan.git
 cd smartscan
 ```
 

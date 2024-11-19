@@ -8,206 +8,388 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --card-bg: #f0f0f0;
-            --border-color: #ddd;
+            --bg-color: #ffffff;
+            --text-color: #212529;
+            --card-bg: #f8f9fa;
+            --border-color: #dee2e6;
         }
 
         [data-theme="dark"] {
-            --bg-color: #222;
-            --text-color: #eee;
-            --card-bg: #333;
-            --border-color: #444;
+            --bg-color: #212529;
+            --text-color: #f8f9fa;
+            --card-bg: #343a40;
+            --border-color: #495057;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
             background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.3s ease;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-color: var(--border-color);
-            transition: transform 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin: 20px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            padding-top: 1rem;
+            min-height: 100vh;
         }
 
         .stock-card {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
             background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .signal-buy { color: #28a745; }
-        .signal-sell { color: #dc3545; }
-        .signal-neutral { color: #ffc107; }
-
-        .metric-badge {
-            padding: 0.4em 0.8em;
-            border-radius: 4px;
-            font-size: 0.9em;
-            margin: 0 0.2em;
-        }
-
-        .search-box {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: var(--bg-color);
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .sort-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .theme-switch {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-        }
-
-        @media (max-width: 768px) {
-            .container { padding: 10px; }
-            .sort-buttons { flex-wrap: wrap; }
-        }
-
-        .performance-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .metric-card {
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
+        .stock-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .chart-container {
-            position: relative;
             margin: 1rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
         }
 
         .chart-container img {
-            transition: transform 0.3s ease;
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .chart-container:hover img {
+        .chart-container img:hover {
             transform: scale(1.02);
+        }
+
+        .metric-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .signal-buy {
+            background-color: #198754;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .signal-sell {
+            background-color: #dc3545;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .signal-neutral {
+            background-color: #6c757d;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(45deg);
+        }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--bg-color);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+        }
+
+        .modal .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .btn-sort {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.375rem 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sort:hover {
+            background-color: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        #searchStocks, #signalFilter {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border-color: var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+        }
+
+        #searchStocks::placeholder {
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .form-select option {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 0.5rem;
+        }
+
+        .stock-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .text-muted {
+            color: var(--text-color) !important;
+            opacity: 0.7;
+        }
+
+        .overview-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            height: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .metric-group {
+            min-width: 120px;
+        }
+
+        .signal-summary {
+            margin-top: 1rem;
+        }
+
+        .signal-item {
+            margin-bottom: 1rem;
+        }
+
+        .progress {
+            background-color: var(--border-color);
+        }
+
+        .last-updated {
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn-sort {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
-    <button class="btn btn-outline-secondary theme-switch" onclick="toggleTheme()">
-        <i class="bi bi-moon-stars"></i>
-    </button>
-
     <div class="container">
-        <div class="bg-white p-4 rounded shadow-sm mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1 class="mb-4">Nifty 50 Technical Analysis Report</h1>
-                <div class="text-muted">
-                    <small>Last Updated: <span id="lastUpdated">2024-11-18 22:14:12</span></small>
-                </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Nifty 50 Technical Analysis</h1>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i class="bi bi-moon-fill"></i>
             </div>
+        </div>
 
-            <div class="search-box mb-4">
-                <input type="text" class="form-control" id="searchStocks" placeholder="Search stocks...">
-                <div class="sort-buttons mt-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="sortStocks('signal')">Sort by Signal</button>
-                    <button class="btn btn-sm btn-outline-primary" onclick="sortStocks('price')">Sort by Price</button>
-                    <button class="btn btn-sm btn-outline-primary" onclick="sortStocks('rsi')">Sort by RSI</button>
-                    <select class="form-select form-select-sm" style="width: auto;" id="signalFilter">
-                        <option value="all">All Signals</option>
-                        <option value="buy">Buy Signals</option>
-                        <option value="sell">Sell Signals</option>
-                        <option value="strong-sell">Strong Sell</option>
-                    </select>
-                </div>
-            </div>
+        <div class="explanation-box mb-4">
+            <p class="mb-0">
+                This dashboard provides real-time technical analysis of Nifty 50 stocks using multiple indicators. The analysis combines RSI (Relative Strength Index), MACD (Moving Average Convergence Divergence), and moving averages (SMA20, SMA50) to generate trading signals. Signal strength is calculated on a scale of -5 to +5, with volume analysis and price action contributing to the final recommendation. Data is updated daily after market hours, with charts showing key support/resistance levels and trend patterns.
+            </p>
+        </div>
 
-            <h2>Nifty 50 Index Overview</h2>
+        <div class="nifty-overview mb-4">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Current Statistics</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Current Value:</strong> <span class="metric-badge bg-light">23,453.80 (-0.34%)</span></li>
-                                <li><strong>Signal:</strong> <span class="metric-badge bg-danger text-white">Strong Sell (Strength: -3.00)</span></li>
-                                <li><strong>RSI:</strong> <span class="metric-badge bg-warning">28.60</span></li>
-                                <li><strong>MACD:</strong> <span class="metric-badge bg-danger text-white">-338.130</span></li>
-                            </ul>
+                <div class="col-lg-8">
+                    <div class="overview-card h-100">
+                        <div class="chart-container">
+                            <img src="charts/NIFTY50_technical_analysis.png" alt="Nifty 50 Chart" class="img-fluid rounded">
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="chart-container">
-                        <img src="charts/NIFTY50_technical_analysis.png" alt="Nifty 50 Chart" class="img-fluid">
+                <div class="col-lg-4">
+                    <div class="overview-card h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h2 class="h4 mb-3">Nifty 50 Overview</h2>
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="metric-group">
+                                        <small class="text-muted">Current Value</small>
+                                        <div class="h4 mb-0">₹23,453.80 <small class="text-danger">(-0.34%)</small></div>
+                                    </div>
+                                    <div class="metric-group">
+                                        <small class="text-muted">Signal</small>
+                                        <div><span class="badge signal-sell">Strong Sell (-3.00)</span></div>
+                                    </div>
+                                    <div class="metric-group">
+                                        <small class="text-muted">RSI</small>
+                                        <div><span class="metric-badge bg-warning">28.60</span></div>
+                                    </div>
+                                    <div class="metric-group">
+                                        <small class="text-muted">MACD</small>
+                                        <div><span class="metric-badge bg-danger text-white">-338.130</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-updated mt-auto">
+                            <small class="text-muted">Generated on: 2024-11-18 22:14:12</small>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <h2 class="mt-4">Market Analysis Summary</h2>
-            <div class="performance-grid">
-                <div class="metric-card bg-success bg-opacity-10">
-                    <h3>3</h3>
-                    <p>Strong Buy/Buy Signals</p>
+        <div class="market-summary mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="overview-card">
+                        <div class="signal-item">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h3 class="h6 mb-0">Strong Buy/Buy</h3>
+                                <span class="badge bg-success">3 stocks</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 7%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="metric-card bg-danger bg-opacity-10">
-                    <h3>25</h3>
-                    <p>Sell Signals</p>
+                <div class="col-md-4">
+                    <div class="overview-card">
+                        <div class="signal-item">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h3 class="h6 mb-0">Sell</h3>
+                                <span class="badge bg-danger">25 stocks</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: 61%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="metric-card bg-danger bg-opacity-25">
-                    <h3>13</h3>
-                    <p>Strong Sell Signals</p>
+                <div class="col-md-4">
+                    <div class="overview-card">
+                        <div class="signal-item">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h3 class="h6 mb-0">Strong Sell</h3>
+                                <span class="badge bg-danger">13 stocks</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: 32%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="metric-card bg-info bg-opacity-10">
-                    <h3>41</h3>
-                    <p>Total Stocks Analyzed</p>
-                </div>
-            </div>
-
-            <h2 class="mt-4">Detailed Stock Analysis</h2>
-            <div class="row" id="stockAnalysis">
-                <!-- Stock cards will be dynamically loaded here -->
             </div>
         </div>
+
+        <div class="controls">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" id="searchStocks" class="form-control" placeholder="Search stocks...">
+                </div>
+                <div class="col-md-4">
+                    <select id="signalFilter" class="form-select">
+                        <option value="all">All Signals</option>
+                        <option value="buy">Buy</option>
+                        <option value="sell">Sell</option>
+                        <option value="strong buy">Strong Buy</option>
+                        <option value="strong sell">Strong Sell</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <div class="btn-group w-100">
+                        <button class="btn btn-sort" data-sort="signal">Sort by Signal</button>
+                        <button class="btn btn-sort" data-sort="price">Sort by Price</button>
+                        <button class="btn btn-sort" data-sort="rsi">Sort by RSI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stockAnalysis" class="row">
+            <!-- Stock cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/stocks.js"></script>
+
     <script>
         // Theme toggling
         function toggleTheme() {
@@ -216,73 +398,46 @@
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
         }
 
         // Initialize theme
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
+        const icon = document.querySelector('.theme-toggle i');
+        icon.className = savedTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
 
-        // Search functionality
-        document.getElementById('searchStocks').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const stockCards = document.querySelectorAll('.stock-card');
-            
-            stockCards.forEach(card => {
-                const stockName = card.querySelector('.stock-name').textContent.toLowerCase();
-                card.style.display = stockName.includes(searchTerm) ? '' : 'none';
-            });
+        // Image modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        document.querySelectorAll('.chart-container img').forEach(img => {
+            img.onclick = function() {
+                modal.style.display = 'flex';
+                modalImg.src = this.src;
+            }
         });
 
-        // Signal filtering
-        document.getElementById('signalFilter').addEventListener('change', function(e) {
-            const signal = e.target.value;
-            const stockCards = document.querySelectorAll('.stock-card');
-            
-            stockCards.forEach(card => {
-                const stockSignal = card.getAttribute('data-signal');
-                if (signal === 'all' || stockSignal === signal) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        modal.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            }
         });
-
-        // Sorting functionality
-        function sortStocks(criterion) {
-            const stockContainer = document.getElementById('stockAnalysis');
-            const stockCards = Array.from(stockContainer.children);
-            
-            stockCards.sort((a, b) => {
-                const aValue = a.getAttribute(`data-${criterion}`);
-                const bValue = b.getAttribute(`data-${criterion}`);
-                
-                if (criterion === 'price' || criterion === 'rsi') {
-                    return parseFloat(bValue) - parseFloat(aValue);
-                }
-                return aValue.localeCompare(bValue);
-            });
-            
-            stockContainer.innerHTML = '';
-            stockCards.forEach(card => stockContainer.appendChild(card));
-        }
-
-        // Load stock data
-        async function loadStockData() {
-            // This function would typically fetch data from your markdown or JSON file
-            // For now, we'll load some sample data
-            const stocksData = [
-                // Add your stock data here
-            ];
-            
-            const container = document.getElementById('stockAnalysis');
-            stocksData.forEach(stock => {
-                // Create and append stock cards
-            });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', loadStockData);
     </script>
 </body>
 </html>
